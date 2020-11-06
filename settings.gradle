@@ -1,0 +1,3 @@
+rootProject.name = 'apigee-publish'
+
+include 'apigee-publish-plugin'

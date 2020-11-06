@@ -1,0 +1,16 @@
+plugins {
+    id 'groovy-gradle-plugin'
+}
+
+group = 'io.everon.gradle-plugins'
+version = '1.0.0'
+
+repositories {
+    jcenter()
+    gradlePluginPortal()
+}
+
+dependencies {
+    implementation 'org.yaml:snakeyaml:1.17'
+    testImplementation 'junit:junit:4.13'
+}
