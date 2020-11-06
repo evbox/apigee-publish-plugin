@@ -1,8 +1,10 @@
 plugins {
     id 'groovy-gradle-plugin'
+    id 'maven-publish'
+    id 'com.gradle.plugin-publish' version '0.12.0'
 }
 
-group = 'io.everon.gradle-plugins'
+group = 'io.everon'
 version = '1.0.0'
 
 repositories {
@@ -13,4 +15,21 @@ repositories {
 dependencies {
     implementation 'org.yaml:snakeyaml:1.17'
     testImplementation 'junit:junit:4.13'
+}
+
+pluginBundle {
+    website = 'https://github.com/jovankricka-io.everon/apigee-publish-plugin'
+    vcsUrl = 'https://github.com/jovankricka-io.everon/apigee-publish-plugin'
+    tags = ['apigee', 'publishing']
+}
+
+gradlePlugin {
+    plugins {
+        apigeePublishPlugin {
+            id = 'io.everon.apigee-publish'
+            displayName = 'apigee-publish'
+            description = 'Gradle plugin for publishing API specs to Apigee'
+            implementationClass = 'io.everon.ApigeePublishPlugin'
+        }
+    }
 }
