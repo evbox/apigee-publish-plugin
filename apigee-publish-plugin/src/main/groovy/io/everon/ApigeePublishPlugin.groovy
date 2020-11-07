@@ -10,11 +10,11 @@ import java.util.regex.Pattern
 
 class ApigeePublishPlugin implements Plugin<Project> {
 
-    private static final String TASK_NAME = 'apigeePublish'
+    public static final String TASK_NAME = 'apigeePublish'
 
     void apply(Project project) {
 
-        def extension = project.extensions.create('apigee', ApigeePublishPluginExtension)
+        def extension = project.extensions.create('apigee', ApigeePublishExtension)
 
         project.tasks.register(TASK_NAME) {
 
