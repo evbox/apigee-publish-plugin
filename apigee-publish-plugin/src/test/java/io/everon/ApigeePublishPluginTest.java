@@ -3,6 +3,7 @@ package io.everon;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.testfixtures.ProjectBuilder;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -10,6 +11,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class ApigeePublishPluginTest {
 
     @Test
+    @DisplayName("Plugin is applied successfully and contains an 'apigeePublish' task.")
     void apigeePublishPluginAddsApigeePublishTaskToProject() {
 
         Project project = ProjectBuilder.builder().build();
