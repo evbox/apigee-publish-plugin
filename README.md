@@ -31,4 +31,4 @@ TBD
 
 ## Caveats
 
-Plugin is relying API that Apigee UI is consuming.
+Plugin is relying on API that Apigee UI is consuming.
