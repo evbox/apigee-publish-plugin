@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'io.everon'
-version = '0.1.1'
+version = '0.1.2'
 
 repositories {
     jcenter()
@@ -20,7 +20,7 @@ dependencies {
 pluginBundle {
     website = 'https://github.com/jovankricka-io.everon/apigee-publish-plugin'
     vcsUrl = 'https://github.com/jovankricka-io.everon/apigee-publish-plugin'
-    tags = ['apigee', 'publishing']
+    tags = ['apigee', 'publishing', 'openAPI']
 }
 
 gradlePlugin {

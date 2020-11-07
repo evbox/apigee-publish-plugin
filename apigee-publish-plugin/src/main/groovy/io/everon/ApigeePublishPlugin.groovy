@@ -47,7 +47,7 @@ class ApigeePublishPlugin implements Plugin<Project> {
 
                     }
 
-                    if (!specPublished) {
+                    if (!specPublished || extension.apiDocsUrl?.trim()) {
                         continue
                     }
 
@@ -223,6 +223,10 @@ class ApigeePublishPlugin implements Plugin<Project> {
     }
 
     static List<Map<String, Object>> getExistingApiDocs(String apiDocsUrl, String apigeeAccessToken) {
+
+        if (apiDocsUrl?.trim()) {
+            return Collections.emptyList();
+        }
 
         def connection = new URL(apiDocsUrl).openConnection()
         connection.setRequestProperty("Authorization", "Bearer ${apigeeAccessToken}")
