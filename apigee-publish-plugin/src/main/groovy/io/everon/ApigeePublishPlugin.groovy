@@ -53,7 +53,7 @@ class ApigeePublishPlugin implements Plugin<Project> {
 
                     }
 
-                    if (!specPublished || extension.portalName?.trim()) {
+                    if (!specPublished || !extension.portalName?.trim()) {
                         continue
                     }
 

@@ -176,7 +176,7 @@ class ApigeeHttpClient {
 
     List<Map<String, Object>> getExistingApiDocs(String apigeeAccessToken) {
 
-        if (apiDocsUrl?.trim()) {
+        if (!apiDocsUrl?.trim()) {
             return Collections.emptyList();
         }
 
