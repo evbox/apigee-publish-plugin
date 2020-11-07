@@ -18,11 +18,17 @@ apigee {
     portalName = "<apigee_portal_name>"
 }
 ```
-Note that the portal name is optional. If not provided APIs will not be published to any portal.
 
+ * **localSpecFilePaths** - List of file paths to your OpenAPI spec yaml files.
+ * **username** - Username to your Apigee account.
+ * **password** - Your Apigee password.
+ * **organizationName** - Name of the organization where you want to upload specs.
+ * **portalName** - Name of the portal where you want to publish specs. Note that the portal name is optional.
+ If not provided APIs will not be published (only specs will be uploaded).
+ 
 ### FAQ
 TBD
 
 ## Caveats
 
-Plugin is using API that Apigee UI is using.
+Plugin is relying API that Apigee UI is consuming.
