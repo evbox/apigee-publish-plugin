@@ -3,7 +3,10 @@
 
 Add following to your `build.gradle` file.
 ```
-pluginManager.apply ApigeePublishPlugin
+plugins {
+    id 'io.everon.apigee-publish' version '0.1.3'
+}
+
 apigee {
     localSpecFilePaths = [
             "<name_of_your_api_spec_file>.yaml",
@@ -11,8 +14,8 @@ apigee {
     ]
     username = "<apigee_username>"
     password = "<apigee_password>
-    portalName = "<apigee_portal_name>"
     organizationName = "<apigee_organization_name>"
+    portalName = "<apigee_portal_name>"
 }
 ```
 Note that the portal name is optional. If not provided APIs will not be published to any portal.
