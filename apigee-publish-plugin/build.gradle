@@ -2,6 +2,8 @@ plugins {
     id 'groovy-gradle-plugin'
     id 'maven-publish'
     id 'com.gradle.plugin-publish' version '0.12.0'
+    id 'jacoco'
+    id 'org.sonarqube' version '2.6'
 }
 
 group = 'io.everon'
@@ -26,9 +28,26 @@ test {
     useJUnitPlatform()
 }
 
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
+
+jacoco {
+    toolVersion = '0.8.5'
+}
+tasks['test'].finalizedBy 'jacocoTestReport'
+
+sonarqube.properties {
+    property 'sonar.host.url', 'https://sonarcloud.io'
+    property 'sonar.organization', 'evb'
+    property 'sonar.projectKey', 'apigee-publish-plugin'
+}
+
 pluginBundle {
-    website = 'https://github.com/jovankricka-io.everon/apigee-publish-plugin'
-    vcsUrl = 'https://github.com/jovankricka-io.everon/apigee-publish-plugin'
+    website = 'https://github.com/everonhq/apigee-publish-plugin'
+    vcsUrl = 'https://github.com/everonhq/apigee-publish-plugin'
     tags = ['apigee', 'publishing', 'openAPI']
 }
 
