@@ -109,12 +109,12 @@ class ApigeePublishPlugin implements Plugin<Project> {
     static void overwriteExtensionWithSystemProperties(ApigeePublishExtension extension) {
         for (Map.Entry<Object, Object> entry : System.getProperties().entrySet()) {
             String key = entry.getKey().toString()
-            if (key.contains("APIGEE.")) {
-                switch (key.split("\\.")[1]) {
-                    case "USERNAME":
+            if (key.contains("APIGEE_")) {
+                switch (key) {
+                    case "APIGEE_USERNAME":
                         extension.username = entry.getValue().toString()
                         break
-                    case "PASSWORD":
+                    case "APIGEE_PASSWORD":
                         extension.password = entry.getValue().toString()
                         break
                     default:

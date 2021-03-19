@@ -26,6 +26,15 @@ apigee {
  * **portalName** - Name of the portal where you want to publish specs. Note that the portal name is optional.
  If not provided APIs will not be published (only specs will be uploaded).
  
+It is also possible to send username/password as dynamic properties in which case they will override the gradle plugin settings.
+The properties should be named APIGEE_USERNAME and APIGEE_PASSWORD. So for instance:
+
+```
+./gradlew apigeePublish -DAPIGEE_USERNAME=myusername -DAPIGEE_PASSWORD=mypassword
+```
+ 
+Currently for the plugin to work you need to have specification, product and catalog setup and connected the first time.
+
 ### FAQ
 TBD
 
