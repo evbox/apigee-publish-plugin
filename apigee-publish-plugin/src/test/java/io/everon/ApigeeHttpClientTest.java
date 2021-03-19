@@ -40,12 +40,11 @@ class ApigeeHttpClientTest {
     void obtainApigeeAccessTokenSuccessfully() {
 
         String accessToken = "You shall pass!";
-        String basicAuthToken = UUID.randomUUID().toString();
         client.setLoginUrl("http://127.0.0.1:8787/oauth/token");
         HttpRequest requestDefinition = request()
                 .withMethod("POST")
                 .withPath("/oauth/token")
-                .withHeader("Authorization", "Basic " + basicAuthToken);
+                .withHeader("Authorization", "Basic ZWRnZWNsaTplZGdlY2xpc2VjcmV0");
         mockServerClient
                 .when(requestDefinition, exactly(1))
                 .respond(response()
@@ -53,7 +52,7 @@ class ApigeeHttpClientTest {
                         .withBody("{ \"access_token\": \"" + accessToken + "\" }"));
 
         String fetchedAcessToken =
-                client.obtainApigeeAccessToken("chucknorris", "chucknorris", basicAuthToken);
+                client.obtainApigeeAccessToken("chucknorris", "chucknorris");
 
         assertThat(fetchedAcessToken).isEqualTo(accessToken);
         mockServerClient.verify(requestDefinition);
@@ -63,19 +62,18 @@ class ApigeeHttpClientTest {
     @Test
     void obtainApigeeAccessTokenNonSuccessStatusReturnedExceptionThrown() {
 
-        String basicAuthToken = UUID.randomUUID().toString();
         client.setLoginUrl("http://127.0.0.1:8787/oauth/token");
         HttpRequest requestDefinition = request()
                 .withMethod("POST")
                 .withPath("/oauth/token")
-                .withHeader("Authorization", "Basic " + basicAuthToken);
+                .withHeader("Authorization", "Basic ZWRnZWNsaTplZGdlY2xpc2VjcmV0");
         mockServerClient
                 .when(requestDefinition, exactly(1))
                 .respond(response()
                         .withStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR));
 
         assertThrows(RuntimeException.class,
-                () -> client.obtainApigeeAccessToken("chucknorris", "chucknorris", basicAuthToken));
+                () -> client.obtainApigeeAccessToken("chucknorris", "chucknorris"));
         mockServerClient.verify(requestDefinition);
 
     }
@@ -305,6 +303,7 @@ class ApigeeHttpClientTest {
 
         String accessToken = "You shall pass!";
         client.setApiDocsUrl("http://localhost:8787/portals/api/sites/portal/apidocs");
+        client.setPortalName("portal");
         HttpRequest requestDefinition = request()
                 .withMethod("GET")
                 .withPath("/portals/api/sites/portal/apidocs")
@@ -328,6 +327,7 @@ class ApigeeHttpClientTest {
     void getExistingApiDocsUrlMissingEmptyListReturned() {
 
         client.setApiDocsUrl("");
+        client.setPortalName(null);
 
         List<Map<String, Object>> apiDocs = client.getExistingApiDocs("");
 
@@ -341,6 +341,7 @@ class ApigeeHttpClientTest {
 
         String accessToken = "You shall pass!";
         client.setApiDocsUrl("http://localhost:8787/portals/api/sites/portal/apidocs");
+        client.setPortalName("portal");
         HttpRequest requestDefinition = request()
                 .withMethod("GET")
                 .withPath("/portals/api/sites/portal/apidocs")

@@ -19,10 +19,10 @@ class ApigeePublishPlugin implements Plugin<Project> {
             ApigeeHttpClient client = new ApigeeHttpClient(extension.organizationName, extension.portalName)
 
             doLast {
-
+                overwriteExtensionWithSystemProperties(extension)
                 def specFileContents = readFileContents(extension.localSpecFilePaths)
                 def apigeeAccessToken = client.obtainApigeeAccessToken(
-                        extension.username, extension.password, extension.basicAuthorizationToken)
+                        extension.username, extension.password)
                 def specsFolder = client.getExistingSpecsFolder(apigeeAccessToken)
                 def folderId = specsFolder.get("id")
                 def existingOpenApiSpecs = specsFolder.get("contents")
@@ -63,7 +63,7 @@ class ApigeePublishPlugin implements Plugin<Project> {
                                 "API doc snapshot republishing will not be attempted."
                         println "    - To have your spec published automatically create API product for ${specName}," +
                                 "and publish it in API catalog of Everon API documentation portal (as described here " +
-                                "https://docs.io.everon.dev/#/architecture/docs/apigee/apigee_developer_portal)."
+                                "https://docs.everon.dev/#/architecture/docs/apigee/apigee_developer_portal)."
                     } else {
 
                         def existingApiDoc = existingApiDocs.stream()
@@ -104,6 +104,24 @@ class ApigeePublishPlugin implements Plugin<Project> {
             return matcher.group(1).replace("\"", "").trim()
         }
         throw new RuntimeException("Could not find title field in spec content: ${openApiYaml}")
+    }
+
+    static void overwriteExtensionWithSystemProperties(ApigeePublishExtension extension) {
+        for (Map.Entry<Object, Object> entry : System.getProperties().entrySet()) {
+            String key = entry.getKey().toString()
+            if (key.contains("APIGEE.")) {
+                switch (key.split("\\.")[1]) {
+                    case "USERNAME":
+                        extension.username = entry.getValue().toString()
+                        break
+                    case "PASSWORD":
+                        extension.password = entry.getValue().toString()
+                        break
+                    default:
+                        break
+                }
+            }
+        }
     }
 
 }

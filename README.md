@@ -13,7 +13,7 @@ apigee {
             "<name_of_your_api_spec_file>.yaml"
     ]
     username = "<apigee_username>"
-    password = "<apigee_password>
+    password = "<apigee_password>"
     organizationName = "<apigee_organization_name>"
     portalName = "<apigee_portal_name>"
 }
