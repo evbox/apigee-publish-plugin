@@ -4,14 +4,26 @@ plugins {
     id 'com.gradle.plugin-publish' version '0.12.0'
     id 'jacoco'
     id 'org.sonarqube' version '2.6'
+    id 'com.jfrog.artifactory' version '4.17.2'
 }
 
 group = 'io.everon'
 version = '0.2.0'
 
+apply from: 'io.everon.artifactory-publish-settings.gradle'
+
 repositories {
     jcenter()
     gradlePluginPortal()
+
+    maven {
+        url 'https://everon.jfrog.io/everon/libs-release'
+        name 'everon'
+        credentials {
+            username = findProperty('artifactory_user') ?: System.env['ARTIFACTORY_USER']
+            password = findProperty('artifactory_password') ?: System.env['ARTIFACTORY_PASSWORD']
+        }
+    }
 }
 
 dependencies {

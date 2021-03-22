@@ -33,32 +33,26 @@ jobs:
           name: sonarqube static analysis
           command: ./gradlew sonarqube -Dsonar.login=$SONAR_TOKEN -Dsonar.branch.name=$CIRCLE_BRANCH
 
-  publish-to-gradle-plugins:
+  publish-library:
     docker:
       - image: circleci/openjdk:11-jdk-browsers
 
     steps:
       - checkout
       - run:
-          name: publish plugin
-          command: ./gradlew publishPlugins -Pgradle.publish.key=$PUBLISH_KEY -Pgradle.publish.secret=$PUBLISH_SECRET
+          command: ./gradlew artifactoryPublish -PbuildNumber=<<pipeline.parameters.build_number>>
+          name: publish apigee-publish-plugin artifact(s)
 
 workflows:
   default:
     jobs:
       - build
       - sonar-static-analysis
-      - publish-to-gradle-plugins-approval:
+      - publish-library-approval:
           requires:
             - build
             - sonar-static-analysis
           type: approval
-          filters:
-            branches:
-              only: ['master']
-      - publish-to-gradle-plugins:
+      - publish-library:
           requires:
-            - publish-to-gradle-plugins-approval
-          filters:
-            branches:
-              only: ['master']
+            - publish-library-approval:
