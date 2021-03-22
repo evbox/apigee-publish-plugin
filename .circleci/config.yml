@@ -40,7 +40,7 @@ jobs:
     steps:
       - checkout
       - run:
-          command: ./gradlew artifactoryPublish -PbuildNumber=<<pipeline.parameters.build_number>>
+          command: ./gradlew artifactoryPublish -PbuildNumber=$CIRCLE_BUILD_NUM
           name: publish apigee-publish-plugin artifact(s)
 
 workflows:
@@ -55,4 +55,4 @@ workflows:
           type: approval
       - publish-library:
           requires:
-            - publish-library-approval:
+            - publish-library-approval
