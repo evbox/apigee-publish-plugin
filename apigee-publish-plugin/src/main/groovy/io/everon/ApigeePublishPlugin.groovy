@@ -30,57 +30,48 @@ class ApigeePublishPlugin implements Plugin<Project> {
 
                 for (String specName : specFileContents.keySet()) {
 
-                    def specPublished
-
-                    if (existingOpenApiSpecs.stream()
-                            .noneMatch { existingOpenApiSpec -> existingOpenApiSpec.get("name") == specName }) {
-
-                        def docId = client.publishNewApiSpecDoc(specName, folderId as String, apigeeAccessToken)
-                        specPublished = client.publishApiSpecContent(
-                                specName, specFileContents.get(specName) as String, docId, apigeeAccessToken)
-
-                    } else {
-
-                        def existingOpenApiSpec = existingOpenApiSpecs.stream()
-                                .filter { existingOpenApiSpec -> existingOpenApiSpec.get("name") == specName }
-                                .findFirst()
-                                .orElseThrow()
-                        specPublished = client.publishApiSpecContent(
-                                specName,
-                                specFileContents.get(specName) as String,
-                                existingOpenApiSpec.get("id") as String,
-                                apigeeAccessToken)
-
-                    }
+                    def specPublished = publishSpec(client, existingOpenApiSpecs, specName, apigeeAccessToken, specFileContents, folderId as String)
 
                     if (!specPublished || !extension.portalName?.trim()) {
                         continue
                     }
 
-                    if (existingApiDocs.stream()
-                            .noneMatch { existingApiDoc -> existingApiDoc.get("title") == specName }) {
-                        println "No api docs found for ${specName}," +
-                                "API doc snapshot republishing will not be attempted."
-                        println "    - To have your spec published automatically create API product for ${specName}," +
-                                "and publish it in API catalog of Everon API documentation portal (as described here " +
-                                "https://docs.everon.dev/#/architecture/docs/apigee/apigee_developer_portal)."
-                    } else {
-
-                        def existingApiDoc = existingApiDocs.stream()
-                                .filter { existingApiDoc -> existingApiDoc.get("title") == specName }
-                                .findFirst()
-                                .orElseThrow()
-                        client.publishApiDocSnapshot(Integer.toString(existingApiDoc.get("id") as int), apigeeAccessToken)
-
-                    }
-
-
+                    publishDoc(client, existingApiDocs, apigeeAccessToken, specName)
                 }
-
             }
+        }
+    }
 
+    static def publishSpec(ApigeeHttpClient client, Object existingOpenApiSpecs, String specName, String apigeeAccessToken, Map specFileContents, String folderId) {
+        def docId
+
+        if (existingOpenApiSpecs.stream().noneMatch { existingOpenApiSpec -> existingOpenApiSpec.get("name") == specName }) {
+            docId = client.publishNewApiSpecDoc(specName, folderId, apigeeAccessToken)
+        } else {
+            docId = existingOpenApiSpecs.stream()
+                    .filter { existingOpenApiSpec -> existingOpenApiSpec.get("name") == specName }
+                    .findFirst()
+                    .orElseThrow().get("id") as String
         }
 
+        return client.publishApiSpecContent(specName, specFileContents.get(specName) as String, docId, apigeeAccessToken)
+    }
+
+    static def publishDoc(ApigeeHttpClient client, List existingApiDocs, String apigeeAccessToken, String specName) {
+        if (existingApiDocs.stream().noneMatch { existingApiDoc -> existingApiDoc.get("title") == specName }) {
+            println "No api docs found for ${specName}," +
+                    "API doc snapshot republishing will not be attempted."
+            println "    - To have your spec published automatically create API product for ${specName}," +
+                    "and publish it in API catalog of Everon API documentation portal (as described here " +
+                    "https://docs.everon.dev/#/architecture/docs/apigee/apigee_developer_portal)."
+        } else {
+            def existingApiDoc = existingApiDocs.stream()
+                    .filter { existingApiDoc -> existingApiDoc.get("title") == specName }
+                    .findFirst()
+                    .orElseThrow()
+            client.publishApiDocSnapshot(Integer.toString(existingApiDoc.get("id") as int), apigeeAccessToken)
+
+        }
     }
 
     static def readFileContents(String[] localFilePaths) {
@@ -123,5 +114,6 @@ class ApigeePublishPlugin implements Plugin<Project> {
             }
         }
     }
+
 
 }
