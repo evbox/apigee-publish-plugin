@@ -37,7 +37,7 @@ class ApigeeHttpClient {
         HttpURLConnection connection = buildHttpConnection(
                 loginUrl,
                 urlParameters,
-                "Basic ZWRnZWNsaTplZGdlY2xpc2VjcmV0",
+                "Basic " + ApigeeConstants.APIGEE_PUBLIC_CREDENTIALS,
                 "application/x-www-form-urlencoded",
                 "POST")
 

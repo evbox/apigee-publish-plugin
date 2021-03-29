@@ -11,7 +11,6 @@ import org.mockserver.model.HttpRequest;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,7 +43,7 @@ class ApigeeHttpClientTest {
         HttpRequest requestDefinition = request()
                 .withMethod("POST")
                 .withPath("/oauth/token")
-                .withHeader("Authorization", "Basic ZWRnZWNsaTplZGdlY2xpc2VjcmV0");
+                .withHeader("Authorization", "Basic " + ApigeeConstants.APIGEE_PUBLIC_CREDENTIALS);
         mockServerClient
                 .when(requestDefinition, exactly(1))
                 .respond(response()
@@ -66,7 +65,7 @@ class ApigeeHttpClientTest {
         HttpRequest requestDefinition = request()
                 .withMethod("POST")
                 .withPath("/oauth/token")
-                .withHeader("Authorization", "Basic ZWRnZWNsaTplZGdlY2xpc2VjcmV0");
+                .withHeader("Authorization", "Basic " + ApigeeConstants.APIGEE_PUBLIC_CREDENTIALS);
         mockServerClient
                 .when(requestDefinition, exactly(1))
                 .respond(response()
