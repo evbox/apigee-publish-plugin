@@ -4,7 +4,7 @@
 Add following to your `build.gradle` file.
 ```
 plugins {
-    id 'io.everon.apigee-publish' version '0.1.3'
+    id 'io.everon.apigee-publish' version '0.2.1'
 }
 
 apigee {
