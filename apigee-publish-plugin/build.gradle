@@ -2,23 +2,38 @@ plugins {
     id 'groovy-gradle-plugin'
     id 'maven-publish'
     id 'com.gradle.plugin-publish' version '0.12.0'
+    id 'jacoco'
+    id 'org.sonarqube' version '2.6'
+    id 'com.jfrog.artifactory' version '4.17.2'
 }
 
 group = 'io.everon'
-version = '0.2.0'
+version = '0.2.1'
+
+apply from: 'io.everon.artifactory-publish-settings.gradle'
 
 repositories {
     jcenter()
     gradlePluginPortal()
+
+    maven {
+        url 'https://everon.jfrog.io/everon/libs-release'
+        name 'everon'
+        credentials {
+            username = findProperty('artifactory_user') ?: System.env['ARTIFACTORY_USER']
+            password = findProperty('artifactory_password') ?: System.env['ARTIFACTORY_PASSWORD']
+        }
+    }
 }
 
 dependencies {
-    implementation 'org.yaml:snakeyaml:1.17'
+    implementation 'org.yaml:snakeyaml:1.27'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
     testImplementation 'org.assertj:assertj-core:3.18.0'
     testImplementation 'org.mock-server:mockserver-junit-jupiter:5.11.1'
+    testImplementation "org.mockito:mockito-core:2.+"
 
 }
 
@@ -26,9 +41,26 @@ test {
     useJUnitPlatform()
 }
 
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
+
+jacoco {
+    toolVersion = '0.8.5'
+}
+tasks['test'].finalizedBy 'jacocoTestReport'
+
+sonarqube.properties {
+    property 'sonar.host.url', 'https://sonarcloud.io'
+    property 'sonar.organization', 'evb'
+    property 'sonar.projectKey', 'apigee-publish-plugin'
+}
+
 pluginBundle {
-    website = 'https://github.com/jovankricka-io.everon/apigee-publish-plugin'
-    vcsUrl = 'https://github.com/jovankricka-io.everon/apigee-publish-plugin'
+    website = 'https://github.com/everonhq/apigee-publish-plugin'
+    vcsUrl = 'https://github.com/everonhq/apigee-publish-plugin'
     tags = ['apigee', 'publishing', 'openAPI']
 }
 

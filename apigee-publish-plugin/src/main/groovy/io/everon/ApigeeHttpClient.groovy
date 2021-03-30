@@ -16,9 +16,11 @@ class ApigeeHttpClient {
     String specDocUrl
     String apiDocsUrl
     String apiDocSnapshotUrlTemplate
+    String portalName
 
     ApigeeHttpClient(String organizationName, String portalName) {
 
+        this.portalName = portalName
         loginUrl = LOGIN_URL
         specFolderUrl = BASE_ORGANIZATIONS_URL + "/${organizationName}/specs/folder/home"
         specContentUrlTemplate = BASE_ORGANIZATIONS_URL + "/${organizationName}/specs/doc/<id>/content"
@@ -28,14 +30,14 @@ class ApigeeHttpClient {
 
     }
 
-    String obtainApigeeAccessToken(String username, String password, String basicAuthorizationToken) {
+    String obtainApigeeAccessToken(String username, String password) {
 
         String urlParameters = "username=${username}&password=${password}&grant_type=password"
         byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8)
         HttpURLConnection connection = buildHttpConnection(
                 loginUrl,
                 urlParameters,
-                "Basic " + basicAuthorizationToken,
+                "Basic " + ApigeeConstants.APIGEE_PUBLIC_CREDENTIALS,
                 "application/x-www-form-urlencoded",
                 "POST")
 
@@ -166,6 +168,8 @@ class ApigeeHttpClient {
 
         if (responseCode == 200) {
             return connection.getInputStream().getText()
+        } else if (responseCode == 204) {
+            return ""
         } else {
             throw new RuntimeException("Failed to retrieve contents of existing Open API specs from Apigee " +
                     "at ${specContentUrl}. Response code ${responseCode} received." +
@@ -175,8 +179,7 @@ class ApigeeHttpClient {
     }
 
     List<Map<String, Object>> getExistingApiDocs(String apigeeAccessToken) {
-
-        if (!apiDocsUrl?.trim()) {
+        if (portalName == null) {
             return Collections.emptyList();
         }
 

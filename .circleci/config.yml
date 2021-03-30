@@ -1,0 +1,58 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:11-jdk-browsers
+
+    steps:
+      - checkout
+      - run:
+          ./gradlew build
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/junit/
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/junit/ \;
+      - store_test_results:
+          path: ~/junit
+
+      - store_artifacts:
+          path: ~/junit
+
+      - store_artifacts:
+          path: apigee-publish-plugin/libs/apigee-publish-plugin.jar
+
+  sonar-static-analysis:
+    docker:
+      - image: circleci/openjdk:11-jdk-browsers
+
+    steps:
+      - checkout
+      - run:
+          name: sonarqube static analysis
+          command: ./gradlew sonarqube -Dsonar.login=$SONAR_TOKEN -Dsonar.branch.name=$CIRCLE_BRANCH
+
+  publish-library:
+    docker:
+      - image: circleci/openjdk:11-jdk-browsers
+
+    steps:
+      - checkout
+      - run:
+          command: ./gradlew artifactoryPublish -PbuildNumber=$CIRCLE_BUILD_NUM
+          name: publish apigee-publish-plugin artifact(s)
+
+workflows:
+  default:
+    jobs:
+      - build
+      - sonar-static-analysis
+      - publish-library-approval:
+          requires:
+            - build
+            - sonar-static-analysis
+          type: approval
+      - publish-library:
+          requires:
+            - publish-library-approval
